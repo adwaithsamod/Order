@@ -3,6 +3,7 @@ package com.example.order.security;
 import com.example.order.dto.AuthenticationRequest;
 import com.example.order.dto.AuthenticationResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -13,6 +14,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.ArrayList;
+import java.util.Collections;
 
 @RestController
 public class AuthenticationController {
@@ -27,13 +32,13 @@ public class AuthenticationController {
     private JwtUtil jwtUtil;
 
     @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
-    public ResponseEntity<?> CreateAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
+    public ResponseEntity<?> CreateAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws ResponseStatusException {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword())
             );
         }catch (BadCredentialsException e){
-            throw new Exception("Incorrect Username or Password",e);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Incorrect Username or Password",e);
         }
         final UserDetails userDetails = userDetailsService
                 .loadUserByUsername(authenticationRequest.getUsername());

@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
 
 import java.util.List;
 
@@ -22,6 +23,11 @@ public class UserCreateRequest {
     private Integer age;
     private Gender gender;
     private String nationality;
+    private String userName;
+    private String password;
+
+    private String authorities;
+    private boolean enabled;
 
 
 

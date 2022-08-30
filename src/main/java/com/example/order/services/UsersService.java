@@ -1,16 +1,18 @@
 package com.example.order.services;
 
 import com.example.order.controllers.exceptionHandling.EmptyInputException;
-import com.example.order.responseModel.Response;
 import com.example.order.controllers.request.AddressCreateRequest;
 import com.example.order.controllers.request.UserCreateRequest;
 import com.example.order.entities.DeliveryAddress;
+import com.example.order.entities.MyUserDetails;
 import com.example.order.entities.Users;
 import com.example.order.repositories.UsersRepository;
+import com.example.order.responseModel.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import springfox.documentation.annotations.Cacheable;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +28,9 @@ public class UsersService {
 
     @Autowired
     private WalletService walletService;
+
+    @Autowired
+    private BCryptPasswordEncoder cryptPasswordEncoder;
 
     public Response addUsers(UserCreateRequest userCreateRequest) {
         List<DeliveryAddress> addresses = new ArrayList<>();
@@ -55,25 +60,30 @@ public class UsersService {
 //                    .city(request.getCity())
 //                    .build());
 //        }
-        Users users = new Users(
+        Users user = new Users(
                 userCreateRequest.getName(),
                 userCreateRequest.getUserPh(),
                 userCreateRequest.getEmail(),
                 addresses,
                 userCreateRequest.getAge(),
                 userCreateRequest.getGender(),
-                userCreateRequest.getNationality()
+                userCreateRequest.getNationality(),
+                userCreateRequest.getUserName(),
+                cryptPasswordEncoder.encode(userCreateRequest.getPassword()),
+                userCreateRequest.getAuthorities(),
+                userCreateRequest.isEnabled()
         );
 
-        if (users.getName().isEmpty()|| users.getName().length()==0||
-                users.getPhoneNumber().isEmpty()|| users.getPhoneNumber().length()==0||
-        users.getEmail().isEmpty()|| users.getEmail().length()==0||
-        users.getNationality().isEmpty()|| users.getNationality().length()==0){
+        if (user.getName().isEmpty()|| user.getName().length()==0||
+                user.getPhoneNumber().isEmpty()|| user.getPhoneNumber().length()==0||
+        user.getEmail().isEmpty()|| user.getEmail().length()==0||
+        user.getNationality().isEmpty()|| user.getNationality().length()==0){
             throw new EmptyInputException();
         }
 
         try {
-            usersRepository.save(users);
+            usersRepository.save(user);
+
         }catch (DataIntegrityViolationException e){
             if(isPhoneNoAlreadyExist(userCreateRequest.getUserPh())){
                 return new Response(false,"Phone No already Registered",null);
@@ -81,8 +91,9 @@ public class UsersService {
                 return new Response(false,"Email already Registered",null);
             }
         }
-        walletService.createWallet(users);
-        return new Response(true,"User Created", users);
+        walletService.createWallet(user);
+
+        return new Response(true,"User Created", user);
 
     }
 
@@ -98,7 +109,6 @@ public class UsersService {
         return usersRepository.findById(userId).get();
     }
 
-    @Cacheable("users")
     public List<Users> getAllUsers() {
         List<Users> userDetails = new ArrayList<>();
         usersRepository.findAll().forEach(userDetails::add);
@@ -108,9 +118,23 @@ public class UsersService {
 
     public void addDeliveryAddressId(Long userId, DeliveryAddress deliveryAddress) {
         Users users = usersRepository.findById(userId).get();
-        List<DeliveryAddress> deliveryAddressList = users.getDeliveryAddress();
+        List<DeliveryAddress> deliveryAddressList = users.getDeliveryAddresses();
         deliveryAddressList.add(deliveryAddress);
-        users.setDeliveryAddress(deliveryAddressList);
+        users.setDeliveryAddresses(deliveryAddressList);
         usersRepository.save(users);
     }
+
+    public MyUserDetails getUserDetailsByUserName(String username) {
+        Users user = (usersRepository.findByUserName(username));
+        MyUserDetails myUserDetails = new MyUserDetails(user.getUserName(), user.getPassword(), user.getAuthorities(), user.isEnabled());
+
+        return myUserDetails;
+    }
+
+    public Users getUserByUserName(String username){
+        Users user = usersRepository.findByUserName(username);
+        return user;
+    }
+
+
 }
