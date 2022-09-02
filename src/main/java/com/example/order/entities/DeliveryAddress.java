@@ -1,8 +1,6 @@
 package com.example.order.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import com.example.order.auditable.Auditable;
 
 import javax.persistence.*;
 

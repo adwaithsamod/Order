@@ -1,5 +1,6 @@
 package com.example.order.entities;
 
+import com.example.order.auditable.Auditable;
 import lombok.Getter;
 import lombok.Setter;
 

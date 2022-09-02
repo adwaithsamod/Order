@@ -1,7 +1,8 @@
 package com.example.order.entities;
 
+import com.example.order.auditable.Auditable;
+
 import java.math.BigDecimal;
-import java.util.Date;
 
 import javax.persistence.*;
 

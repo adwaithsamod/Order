@@ -26,7 +26,7 @@ public class VoucherService {
         for (VoucherCreateRequest voucherCreateRequest : voucherCreateRequestList) {
             if(voucherCreateRequest.getExpiryDate().compareTo(Calendar.getInstance())<0){
                 messages.add(String.format("%s is expired", voucherCreateRequest.getVoucherName()));
-                    continue;
+                continue;
             }
             voucher = new Voucher(
                     voucherCreateRequest.getVoucherName(),
@@ -58,8 +58,8 @@ public class VoucherService {
 
     public String deleteVoucher(Long voucherId) {
 
-            voucherRepository.deleteById(voucherId);
-            return "Deleted";
+        voucherRepository.deleteById(voucherId);
+        return "Deleted";
 
 
     }

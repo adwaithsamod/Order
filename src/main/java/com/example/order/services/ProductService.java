@@ -3,6 +3,7 @@ package com.example.order.services;
 import com.example.order.responseModel.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.order.entities.Product;
@@ -19,6 +20,7 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
+
     public Response addProducts(List<Product> products) {
 
         productRepository.saveAll(products);
@@ -34,9 +36,9 @@ public class ProductService {
 
     public Response getPrice(Long productId) {
 
-            BigDecimal price = productRepository.findById(productId).get().getPrice();
-            Response response = new Response(true,"Price fetched",price);
-            return response;
+        BigDecimal price = productRepository.findById(productId).get().getPrice();
+        Response response = new Response(true,"Price fetched",price);
+        return response;
 
 
     }
@@ -44,9 +46,9 @@ public class ProductService {
     public Response getStock(Long productId) {
 
 
-            Long stock = productRepository.findById(productId).get().getStock();
-            Response response = new Response(true,"Stock fetched",stock);
-             return response;
+        Long stock = productRepository.findById(productId).get().getStock();
+        Response response = new Response(true,"Stock fetched",stock);
+        return response;
 
     }
 
@@ -57,12 +59,12 @@ public class ProductService {
     }
 
     public Response deleteInventory(Long id) {
-            Response response = new Response();
-            response.setResult(productRepository.findById(id));
-            productRepository.deleteById(id);
-            response.setMessage("Deleted");
-            response.setIsValid(true);
-            return response;
+        Response response = new Response();
+        response.setResult(productRepository.findById(id));
+        productRepository.deleteById(id);
+        response.setMessage("Deleted");
+        response.setIsValid(true);
+        return response;
     }
 
     public Product getProduct(Long productId) {

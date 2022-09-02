@@ -1,6 +1,7 @@
 package com.example.order.entities;
 
 
+import com.example.order.auditable.Auditable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +16,7 @@ import java.math.BigDecimal;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Product extends Auditable{
+public class Product extends Auditable {
     @Id
     @GeneratedValue
     private Long productId;
@@ -48,5 +49,5 @@ public class Product extends Auditable{
     private String retailer;
 
 
-    
+
 }

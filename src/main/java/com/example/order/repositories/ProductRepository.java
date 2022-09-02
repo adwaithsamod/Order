@@ -1,3 +1,4 @@
+
 package com.example.order.repositories;
 
 import org.springframework.data.repository.CrudRepository;
@@ -9,6 +10,4 @@ import com.example.order.entities.Product;
 public interface ProductRepository extends CrudRepository<Product,Long> {
 
 
-    }
-    
-
+}

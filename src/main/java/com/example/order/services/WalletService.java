@@ -42,10 +42,10 @@ public class WalletService {
     }
 
     public Response topUp(WalletTopUpRequest walletTopupRequest) {
-            Wallet wallet = getWalletByUserId(walletTopupRequest.getUserId());
-            wallet.setWalletBalance(getBalance(walletTopupRequest.getUserId()).add(walletTopupRequest.getMoney()));
-            walletRepository.save(wallet);
-            return new Response(true, "Wallet fetched", wallet);
+        Wallet wallet = getWalletByUserId(walletTopupRequest.getUserId());
+        wallet.setWalletBalance(getBalance(walletTopupRequest.getUserId()).add(walletTopupRequest.getMoney()));
+        walletRepository.save(wallet);
+        return new Response(true, "Wallet fetched", wallet);
     }
 
     public void createWallet(Users users) {

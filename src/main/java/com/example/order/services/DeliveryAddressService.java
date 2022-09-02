@@ -15,8 +15,8 @@ public class DeliveryAddressService {
     private UsersService usersService;
 
     public DeliveryAddress getAddressById(Long deliveryAddressId){
-            return deliveryAddressRepository.findById(deliveryAddressId).get();
-        }
+        return deliveryAddressRepository.findById(deliveryAddressId).get();
+    }
 
 
     public DeliveryAddress addDeliveryAddress(AddressCreateRequest addressCreateRequest, Long userId) {

@@ -30,5 +30,3 @@ public class VoucherCreateRequest {
         this.userCount = userCount;
     }
 }
-
-

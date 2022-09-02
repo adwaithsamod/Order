@@ -1,16 +1,18 @@
 package com.example.order.entities;
 
+import com.example.order.auditable.Auditable;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 
 
 @Entity
 @Table
-public class Wallet extends Auditable{
+public class Wallet extends Auditable {
     @Id
     @GeneratedValue
     private Long walletId;
-    
+
     @Column(name="wallet_balance")
     private BigDecimal walletBalance;
 

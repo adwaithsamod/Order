@@ -12,5 +12,3 @@ public interface ItemOrderRepository extends CrudRepository<ItemOrder,Long> {
 
     List<ItemOrder> findAllOrdersByOrderMasterOrderMasterId(Long orderMasterId);
 }
-    
-

@@ -5,6 +5,7 @@ import com.example.order.responseModel.Response;
 import com.example.order.entities.Product;
 import com.example.order.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,10 +15,11 @@ public class ProductController {
 
     @Autowired
     private ProductService productService;
-    
+
+    @PreAuthorize("hasRole('ADMIN')")
     @RequestMapping(method=RequestMethod.POST, value="products")
     public Response addProducts(@RequestBody List<Product> products){
-       return productService.addProducts(products);
+        return productService.addProducts(products);
     }
 
     @GetMapping(value="hello")
@@ -28,7 +30,7 @@ public class ProductController {
 
     @RequestMapping("/products")
     public Response getAllProducts(){
-       return productService.getAllProducts();
+        return productService.getAllProducts();
     }
 
     @RequestMapping("users/{userId}/products/{productId}/price")

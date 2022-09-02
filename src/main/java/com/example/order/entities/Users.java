@@ -1,20 +1,24 @@
 package com.example.order.entities;
 
 
+import com.example.order.auditable.Auditable;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
 @Setter
 @AllArgsConstructor
 @Table(name="user_details")
-public class Users extends Auditable{
+public class Users extends Auditable {
     @Id
     @GeneratedValue
     private Long id;
@@ -38,20 +42,29 @@ public class Users extends Auditable{
 
     private String nationality;
 
+    @Column(unique = true)
     private String userName;
+
+    @JsonIgnore
     private String password;
 
-    private String authorities;
     private boolean enabled;
 
-
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "USER_ROLES",
+            joinColumns = {
+                    @JoinColumn(name = "USER_ID")
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "ROLE_ID") })
+    private Set<Role> roles;
 
 
     public Users() {
 
     }
 
-    public Users(String name, String phoneNumber, String email, List<DeliveryAddress> deliveryAddresses, Integer age, Gender gender, String nationality, String userName, String password, String authorities, boolean enabled) {
+    public Users(String name, String phoneNumber, String email, List<DeliveryAddress> deliveryAddresses, Integer age, Gender gender, String nationality, String userName, String password, boolean enabled) {
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.email = email;
@@ -61,7 +74,7 @@ public class Users extends Auditable{
         this.nationality = nationality;
         this.userName = userName;
         this.password = password;
-        this.authorities = authorities;
+
         this.enabled = enabled;
     }
 
@@ -69,4 +82,10 @@ public class Users extends Auditable{
     public Users(Users user) {
         super();
     }
+
+//    public Users(String userName, String password, Set<SimpleGrantedAuthority> authority) {
+//        this.userName = userName;
+//        this.password = password;
+//        this.roles = authority;
+//    }
 }

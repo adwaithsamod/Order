@@ -202,45 +202,44 @@ public class OrderMasterService {
 
     @Transactional
     public Response cancelOrder(Long orderId) {
-            ItemOrder itemOrder = itemOrderService.getItemOrderById(orderId);
-            if(itemOrder.getDeliveryStatus().compareTo("Delivered")!=0 && itemOrder.getDeliveryStatus().compareTo("Cancelled")!=0) {
-                OrderMaster orderMaster = itemOrder.getOrderMaster();
-                Long orderMasterId = itemOrder.getOrderMaster().getOrderMasterId();
-                List<ItemOrder> itemOrderList = itemOrderService.getAllOrdersByOrderMasterId(orderMasterId);
-                BigDecimal itemOrderDiscount = BigDecimal.valueOf(0);
-                for (ItemOrder item : itemOrderList) {
-                    itemOrderDiscount = itemOrderDiscount.add(item.getDiscount().multiply(BigDecimal.valueOf(item.getQuantity())));
-                }
-                BigDecimal masterOrderDiscount = orderMaster.getTotalDiscount();
-                if (masterOrderDiscount.compareTo(itemOrderDiscount) > 0) {
-                    return new Response(false, "Cannot cancel orders which used vouchers or marginal discount", null);
-                }
-
-                itemOrderService.cancelOrder(itemOrder);
-                Boolean isCancelled = itemOrderService.checkIfAllCancelled(orderMasterId);
-                if (isCancelled) {
-
-                    orderMaster.setStatus("Cancelled");
-                    orderMasterRepository.save(orderMaster);
-                }
-                Users users = orderMaster.getUsers();
-                Wallet wallet = walletService.getWalletByUserId(users.getId());
-//                wallet.setWalletBalance();
-                WalletTopUpRequest walletTopUpRequest = new WalletTopUpRequest(users.getId(), itemOrder.getPrice().subtract(itemOrder.getDiscount()).multiply(BigDecimal.valueOf(itemOrder.getQuantity())));
-                walletService.topUp(walletTopUpRequest);
-                Product product = productService.getProduct(itemOrder.getProductId());
-                product.setStock(product.getStock() + itemOrder.getQuantity());
-                return new Response(true, "Order Cancelled", itemOrder);
-            } else if (itemOrder.getDeliveryStatus().compareTo("Delivered")==0) {
-                return new Response(false,"Already Delivered Products cannot be cancelled",null);
-            } else if (itemOrder.getDeliveryStatus().compareTo("Cancelled")==0) {
-                return new Response(false,"Already cancelled Products cannot be cancelled",null);
-            }else
-            {
-                return new Response(false,"Invalid Status",null);
+        ItemOrder itemOrder = itemOrderService.getItemOrderById(orderId);
+        if(itemOrder.getDeliveryStatus().compareTo("Delivered")!=0 && itemOrder.getDeliveryStatus().compareTo("Cancelled")!=0) {
+            OrderMaster orderMaster = itemOrder.getOrderMaster();
+            Long orderMasterId = itemOrder.getOrderMaster().getOrderMasterId();
+            List<ItemOrder> itemOrderList = itemOrderService.getAllOrdersByOrderMasterId(orderMasterId);
+            BigDecimal itemOrderDiscount = BigDecimal.valueOf(0);
+            for (ItemOrder item : itemOrderList) {
+                itemOrderDiscount = itemOrderDiscount.add(item.getDiscount().multiply(BigDecimal.valueOf(item.getQuantity())));
             }
+            BigDecimal masterOrderDiscount = orderMaster.getTotalDiscount();
+            if (masterOrderDiscount.compareTo(itemOrderDiscount) > 0) {
+                return new Response(false, "Cannot cancel orders which used vouchers or marginal discount", null);
+            }
+
+            itemOrderService.cancelOrder(itemOrder);
+            Boolean isCancelled = itemOrderService.checkIfAllCancelled(orderMasterId);
+            if (isCancelled) {
+
+                orderMaster.setStatus("Cancelled");
+                orderMasterRepository.save(orderMaster);
+            }
+            Users users = orderMaster.getUsers();
+            Wallet wallet = walletService.getWalletByUserId(users.getId());
+//                wallet.setWalletBalance();
+            WalletTopUpRequest walletTopUpRequest = new WalletTopUpRequest(users.getId(), itemOrder.getPrice().subtract(itemOrder.getDiscount()).multiply(BigDecimal.valueOf(itemOrder.getQuantity())));
+            walletService.topUp(walletTopUpRequest);
+            Product product = productService.getProduct(itemOrder.getProductId());
+            product.setStock(product.getStock() + itemOrder.getQuantity());
+            return new Response(true, "Order Cancelled", itemOrder);
+        } else if (itemOrder.getDeliveryStatus().compareTo("Delivered")==0) {
+            return new Response(false,"Already Delivered Products cannot be cancelled",null);
+        } else if (itemOrder.getDeliveryStatus().compareTo("Cancelled")==0) {
+            return new Response(false,"Already cancelled Products cannot be cancelled",null);
+        }else
+        {
+            return new Response(false,"Invalid Status",null);
         }
-
-
     }
 
+
+}

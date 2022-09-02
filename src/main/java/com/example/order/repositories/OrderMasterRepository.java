@@ -12,5 +12,3 @@ public interface OrderMasterRepository extends CrudRepository<OrderMaster,Long> 
 
     List<OrderMaster> findAllByUsersId(Long userId);
 }
-    
-

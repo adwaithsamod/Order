@@ -68,7 +68,7 @@ public class MyUserDetails implements UserDetails {
     public MyUserDetails(String username, String password, String authorities, Boolean enabled) {
         this.username = username;
         this.password = password;
-        this.authorities = Arrays.stream(authorities.split(",")).map(SimpleGrantedAuthority::new).collect(Collectors.toList());
+//        this.authorities = Arrays.stream(authorities.split(",")).map(SimpleGrantedAuthority::new).collect(Collectors.toList());
         this.enabled = enabled;
     }
 

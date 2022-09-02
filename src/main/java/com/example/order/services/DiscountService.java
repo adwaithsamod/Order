@@ -43,5 +43,5 @@ public class DiscountService {
         }catch(NoSuchElementException e){
             return BigDecimal.valueOf(0);
         }
-        }
+    }
 }

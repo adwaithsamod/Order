@@ -1,7 +1,8 @@
-package com.example.order.entities;
+package com.example.order.auditable;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -17,7 +18,7 @@ import java.util.Date;
 @Setter
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public abstract class Auditable<U> {
+public abstract class Auditable {
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
     protected Date createdDate;
@@ -25,4 +26,12 @@ public abstract class Auditable<U> {
     @LastModifiedDate
     @Temporal(TemporalType.TIMESTAMP)
     protected Date lastModifiedDate;
+
+    @CreatedBy
+    protected String createdBy;
+
+    @LastModifiedBy
+    protected String lastModifiedBy;
+
+
 }

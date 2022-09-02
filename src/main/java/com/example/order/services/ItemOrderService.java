@@ -33,7 +33,7 @@ public class ItemOrderService {
     }
 
     public ItemOrder getItemOrderById(Long id){
-            return itemOrderRepository.findById(id).get();
+        return itemOrderRepository.findById(id).get();
     }
 
 
@@ -56,30 +56,30 @@ public class ItemOrderService {
     }
 
     public Response updateStatus(Long orderId, String status) {
-            ItemOrder itemOrder = itemOrderRepository.findById(orderId).get();
-            itemOrder.setDeliveryStatus(status);
-            itemOrderRepository.save(itemOrder);
-            return new Response(true,"Status updated successfully",itemOrder);
+        ItemOrder itemOrder = itemOrderRepository.findById(orderId).get();
+        itemOrder.setDeliveryStatus(status);
+        itemOrderRepository.save(itemOrder);
+        return new Response(true,"Status updated successfully",itemOrder);
     }
 
     public Response bulkStatusUpdate(List<Long> idList) {
 
-           Iterable<ItemOrder> itemOrderList = itemOrderRepository.findAllById(idList);
-           for(ItemOrder itemOrder : itemOrderList){
-               itemOrder.setDeliveryStatus("Delivered");
+        Iterable<ItemOrder> itemOrderList = itemOrderRepository.findAllById(idList);
+        for(ItemOrder itemOrder : itemOrderList){
+            itemOrder.setDeliveryStatus("Delivered");
             itemOrderRepository.saveAll(itemOrderList);
-            }
-           if(itemOrderList.equals(new ArrayList<>())){
-               return new Response(false,"No such id",null);
-            }
-            return new Response(true,"Status Updated",itemOrderList);
+        }
+        if(itemOrderList.equals(new ArrayList<>())){
+            return new Response(false,"No such id",null);
+        }
+        return new Response(true,"Status Updated",itemOrderList);
     }
 
 
     public Boolean checkIfAllDelivered(Long orderId) {
         ItemOrder itemOrder = itemOrderRepository.findById(orderId).get();
-       Long orderMasterId = itemOrder.getOrderMaster().getOrderMasterId();
-       List<ItemOrder> itemOrderList = itemOrderRepository.findAllOrdersByOrderMasterOrderMasterId(orderMasterId);
+        Long orderMasterId = itemOrder.getOrderMaster().getOrderMasterId();
+        List<ItemOrder> itemOrderList = itemOrderRepository.findAllOrdersByOrderMasterOrderMasterId(orderMasterId);
         for(ItemOrder item : itemOrderList){
             if(item.getDeliveryStatus().compareTo("Delivered")!=0){
                 return false;
@@ -104,4 +104,3 @@ public class ItemOrderService {
         itemOrderRepository.save(itemOrder);
     }
 }
-
